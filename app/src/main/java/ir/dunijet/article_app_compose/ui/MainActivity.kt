@@ -1,4 +1,4 @@
-package ir.dunijet.article_app_compose
+package ir.dunijet.article_app_compose.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
