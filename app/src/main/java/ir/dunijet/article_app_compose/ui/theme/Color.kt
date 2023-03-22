@@ -2,7 +2,6 @@ package ir.dunijet.article_app_compose.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-
 // light ->
 val cBackground = Color(0xFFDDDDDD)
 val cPrimary = Color(0xFF0855DF)
@@ -17,7 +16,6 @@ val cText3 = Color(0xFF888888)
 val cText4 = Color(0xFF444444)
 
 val cBorder = Color(0xFFEEEEEE)
-
 
 // dark ->
 // val cBackgroundDark = Color(0xFF37393F)
