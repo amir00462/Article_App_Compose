@@ -2,7 +2,26 @@ package ir.dunijet.article_app_compose.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple200 = Color(0xFFBB86FC)
-val Purple500 = Color(0xFF6200EE)
-val Purple700 = Color(0xFF3700B3)
-val Teal200 = Color(0xFF03DAC5)
+
+// light ->
+val cBackground = Color(0xFFDDDDDD)
+val cPrimary = Color(0xFF0855DF)
+val cError = Color(0xFFDF0808)
+
+val cBlack = Color(0xFF000000)
+val cWhite = Color(0xFFFFFFFF)
+
+val cText1 = Color(0xFF222222)
+val cText2 = Color(0xFF666666)
+val cText3 = Color(0xFF888888)
+val cText4 = Color(0xFF444444)
+
+val cBorder = Color(0xFFEEEEEE)
+
+
+// dark ->
+// val cBackgroundDark = Color(0xFF37393F)
+// val cText1Dark = Color(0xFF5C5F66)
+// val cText2Dark = Color(0xFFBABBBF)
+// val cText3Dark = Color(0xFFD4D4D4)
+// val cText4Dark = Color(0xFFEEEEEE)
