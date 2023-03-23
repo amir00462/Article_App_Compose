@@ -1,7 +1,7 @@
 package ir.dunijet.article_app_compose.ui.wiegets
 
-import ir.dunijet.article_app_compose.R
 import android.widget.Toast
+import ir.dunijet.article_app_compose.R
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
@@ -26,6 +26,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import ir.dunijet.article_app_compose.ui.theme.*
+import ir.dunijet.article_app_compose.util.NetworkChecker
 import kotlinx.coroutines.launch
 
 @Composable
@@ -101,8 +102,6 @@ fun HomeDrawer(onCloseDrawer: () -> Unit) {
     }
 
 }
-
-//
 
 @Composable
 private fun DrawerMenuItem(
@@ -234,24 +233,6 @@ private fun DrawerMenuItem(
 
 }
 
-/*
-*             AnimatedVisibility(
-                visible = rotation == -90f,
-
-                enter = slideInVertically(
-                    initialOffsetY = { 20 },
-                    animationSpec = tween(durationMillis = 300)
-                ) + fadeIn(animationSpec = tween(durationMillis = 300)),
-
-                exit = slideOutVertically(
-                    targetOffsetY = { 20 },
-                    animationSpec = tween(durationMillis = 300)
-                ) + fadeOut(animationSpec = tween(durationMillis = 300))
-
-            ) {
-*
-* */
-
 @Composable
 fun DrawerBody(modifier: Modifier) {
     Column(modifier = modifier) {
@@ -360,7 +341,7 @@ private fun Developer(
             uriHandler.openUri("https://www.instagram.com/" + page.substring(1))
         }) {
 
-        val (nameDeveloper, imgInsta , details) = createRefs()
+        val (nameDeveloper, imgInsta, details) = createRefs()
 
         Text(
             modifier = Modifier
@@ -389,7 +370,6 @@ private fun Developer(
             )
 
 
-
         }
 
         Box(modifier = Modifier
@@ -398,10 +378,14 @@ private fun Developer(
                 bottom.linkTo(parent.bottom)
                 start.linkTo(parent.start)
             }
-            .padding(start = 16.dp) , contentAlignment = Alignment.Center)
+            .padding(start = 16.dp), contentAlignment = Alignment.Center)
         {
 
-            Image(modifier = Modifier.size(52.dp) , painter = painterResource(id = R.drawable.ic_ring), contentDescription = null)
+            Image(
+                modifier = Modifier.size(52.dp),
+                painter = painterResource(id = R.drawable.ic_ring),
+                contentDescription = null
+            )
 
             Image(
                 modifier = Modifier
@@ -417,4 +401,97 @@ private fun Developer(
 }
 
 // - - - - - - - - - - - - - - - - - - - - -
+
+@Composable
+fun HomeContent() {
+    val context = LocalContext.current
+    var internetConnected by remember { mutableStateOf(true) }
+    val jobState = remember { mutableStateOf(2) } // 1:loading , 2:ok , 3:noArticle
+    val scaffoldState = rememberScaffoldState()
+    val scope = rememberCoroutineScope()
+
+    // Check internet
+    val isConnected = NetworkChecker(context).isInternetConnected
+    Toast.makeText(context, isConnected.toString(), Toast.LENGTH_SHORT).show()
+    if (!isConnected) {
+        internetConnected = false
+        jobState.value = 3
+    }
+//    else {
+//        internetConnected = true
+//        jobState.value = 1
+//    }
+//
+
+    ConstraintLayout(
+        modifier = Modifier.fillMaxSize()
+    ) {
+
+        val (noInternet, progressBar, articleList) = createRefs()
+
+        when (jobState.value) {
+
+            1 -> {
+                CircularProgressIndicator(modifier = Modifier
+                    .size(40.dp)
+                    .constrainAs(progressBar) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    })
+            }
+
+            2 -> {
+                ArticleList(modifier = Modifier
+                    .constrainAs(articleList) {
+                        top.linkTo(parent.top)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    })
+            }
+
+            3 -> {
+
+                Column(modifier = Modifier
+                    .constrainAs(noInternet) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    }
+                    .padding(bottom = 80.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Image(
+                        modifier = Modifier.size(120.dp),
+                        painter = painterResource(id = R.drawable.ic_no_article),
+                        contentDescription = null
+                    )
+                    Text(
+                        text = "مقاله ای برای نمایش وجود ندارد",
+                        style = MaterialTheme.typography.h5,
+                        color = cText2
+                    )
+                }
+
+            }
+
+        }
+
+    }
+
+    // TODO: work on Snack Bar
+    if (!internetConnected) {
+        Snackbar(
+            modifier = Modifier.padding(16.dp)) {
+            Text(
+                modifier = Modifier.fillMaxWidth() ,
+                text = "لطفا از اتصال دستگاه خود به اینترنت مطمئن شوید",
+                textAlign = TextAlign.Center
+            )
+        }
+
+    }
+
+}
+
 
