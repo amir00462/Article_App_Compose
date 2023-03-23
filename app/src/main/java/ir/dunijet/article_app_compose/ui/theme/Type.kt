@@ -44,6 +44,14 @@ val Typography = Typography(
         lineHeight = 22.sp
     ),
 
+    // navigation drawer title text
+    subtitle2 = TextStyle(
+        fontFamily = VazirFont,
+        fontWeight = FontWeight.W400,
+        fontSize = 14.sp,
+        lineHeight = 22.sp
+    ),
+
     // title article , no article
     h5 = TextStyle(
         fontFamily = VazirFont,

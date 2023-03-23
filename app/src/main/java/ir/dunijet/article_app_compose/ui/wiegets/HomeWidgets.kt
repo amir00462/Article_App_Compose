@@ -3,16 +3,20 @@ package ir.dunijet.article_app_compose.ui.wiegets
 import ir.dunijet.article_app_compose.R
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -20,10 +24,14 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import ir.dunijet.article_app_compose.ui.theme.cArrow
 import ir.dunijet.article_app_compose.ui.theme.cBackground
+import ir.dunijet.article_app_compose.ui.theme.cPrimary
+import ir.dunijet.article_app_compose.ui.theme.cText1
+import kotlinx.coroutines.launch
 
 @Composable
-fun HomeToolbar(onSearchClicked: () -> Unit , onDrawerClicked: () -> Unit) {
+fun HomeToolbar(onSearchClicked: () -> Unit, onDrawerClicked: () -> Unit) {
 
     ConstraintLayout(
         modifier = Modifier
@@ -48,16 +56,16 @@ fun HomeToolbar(onSearchClicked: () -> Unit , onDrawerClicked: () -> Unit) {
         MainButton(modifier = Modifier.constrainAs(search) {
             top.linkTo(parent.top)
             bottom.linkTo(parent.bottom)
-            end.linkTo(parent.end , 16.dp)
-        } , R.drawable.ic_search) {
+            end.linkTo(parent.end, 16.dp)
+        }, R.drawable.ic_search) {
             onSearchClicked.invoke()
         }
 
         MainButton(modifier = Modifier.constrainAs(drawer) {
             top.linkTo(parent.top)
             bottom.linkTo(parent.bottom)
-            start.linkTo(parent.start , 16.dp)
-        } , R.drawable.ic_menu) {
+            start.linkTo(parent.start, 16.dp)
+        }, R.drawable.ic_menu) {
             onDrawerClicked.invoke()
         }
 
@@ -71,63 +79,333 @@ fun HomeToolbar(onSearchClicked: () -> Unit , onDrawerClicked: () -> Unit) {
 fun HomeDrawer(onCloseDrawer: () -> Unit) {
 
     BackHandler(onBack = onCloseDrawer)
-    Box(modifier = Modifier) {
+    ConstraintLayout(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+    ) {
+        val (exit, body) = createRefs()
+
+        MainButton(modifier = Modifier.constrainAs(exit) {
+
+            top.linkTo(parent.top, 14.dp)
+            end.linkTo(parent.end, 16.dp)
+
+        }, src = R.drawable.ic_close) {
+            onCloseDrawer.invoke()
+        }
+
+        DrawerBody(modifier = Modifier.constrainAs(body) {
+            start.linkTo(parent.start)
+            top.linkTo(exit.bottom, 29.dp)
+        })
+
+    }
+
+}
+
+//
+
+@Composable
+private fun DrawerMenuItem(
+    iconDrawableId: Int,
+    text: String,
+    onClick: () -> Unit
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+
+    var rotation by remember { mutableStateOf(0f) }
+    val showDetail by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    val rotationAnimation = remember { Animatable(0f) }
+
+    Column {
+
+        ConstraintLayout(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(
+//                interactionSource = interactionSource,
+//                indication = null
+                ) {
+
+                    scope.launch {
+
+                        if (rotation == 0f) {
+                            rotation = -90f
+
+                            rotationAnimation.animateTo(
+                                targetValue = -90f,
+                                animationSpec = tween(durationMillis = 300)
+                            )
+                        } else {
+                            rotation = 0f
+
+                            rotationAnimation.animateTo(
+                                targetValue = 0f,
+                                animationSpec = tween(durationMillis = 300)
+                            )
+                        }
+
+                    }
+
+                    onClick.invoke()
+                }
+                .padding(top = 14.dp, bottom = 14.dp)
+        ) {
+
+            val (title, arrow, detail) = createRefs()
+
+            Row(
+                modifier = Modifier
+                    .constrainAs(title) {
+                        start.linkTo(parent.start)
+                        top.linkTo(parent.top)
+                    }
+                    .fillMaxWidth()
+                    .padding(start = 18.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    modifier = Modifier.size(24.dp),
+                    painter = painterResource(iconDrawableId),
+                    tint = cPrimary,
+                    contentDescription = null,
+                )
+                Spacer(modifier = Modifier.width(14.dp))
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.subtitle2
+                )
+
+            }
+
+            Icon(
+                modifier = Modifier
+                    .constrainAs(arrow) {
+                        end.linkTo(parent.end, 25.dp)
+                        top.linkTo(title.top)
+                        bottom.linkTo(title.bottom)
+                    }
+                    .size(15.dp, 18.dp)
+                    .rotate(rotationAnimation.value),
+                tint = cArrow,
+                painter = painterResource(R.drawable.ic_arrow_left),
+                contentDescription = null,
+            )
+
+        }
+
+        //if (rotation == -90f) {
+
+        AnimatedVisibility(
+            visible = rotation == -90f,
+
+            enter = slideInHorizontally(
+                initialOffsetX = { 30 },
+                animationSpec = tween(durationMillis = 300)
+            ) + fadeIn(animationSpec = tween(durationMillis = 300)),
+
+            exit = slideOutVertically(
+                targetOffsetY = { 30 },
+                animationSpec = tween(durationMillis = 300)
+            ) + fadeOut(animationSpec = tween(durationMillis = 300))
+
+        ) {
+
+            if(text == "اطلاعات توسعه دهندگان") {
+                DevelopersIds()
+            } else {
+
+                AppInfo(
+                    modifier = Modifier.padding(
+                        top = 8.dp,
+                        start = 18.dp,
+                        end = 25.dp,
+                        bottom = 16.dp
+                    )
+                )
+
+            }
+
+        }
+
+        //}
+
+    }
+
+}
+
+/*
+*             AnimatedVisibility(
+                visible = rotation == -90f,
+
+                enter = slideInVertically(
+                    initialOffsetY = { 20 },
+                    animationSpec = tween(durationMillis = 300)
+                ) + fadeIn(animationSpec = tween(durationMillis = 300)),
+
+                exit = slideOutVertically(
+                    targetOffsetY = { 20 },
+                    animationSpec = tween(durationMillis = 300)
+                ) + fadeOut(animationSpec = tween(durationMillis = 300))
+
+            ) {
+*
+* */
+
+@Composable
+fun DrawerBody(modifier: Modifier) {
+    Column(modifier = modifier) {
+
+        DrawerMenuItem(
+            iconDrawableId = R.drawable.ic_code,
+            text = "اطلاعات توسعه دهندگان"
+        ) {
 
 
+        }
+
+        DrawerMenuItem(
+            iconDrawableId = R.drawable.ic_info,
+            text = "درباره برنامه",
+        ) {
+
+
+        }
+    }
+}
+
+@Composable
+fun AppInfo(modifier: Modifier) {
+
+    val appInfo = """
+        سلام رفقا، صفر تا صد پیاده سازی این این اپ به همراه پیاده سازی بک اند و داشبورد فرانت اند در دوره تیم گیت سایت دانیجت پیاده شده.
+        در این دوره شما استفاده از گیت و گیت هاب برای مدیریت پروژه در یک تیم برنامه نویسی ۴ نفره به همراه مدیر پروژه و طراح ui رو یاد میگیرید که در آموزش های فارسی گیت بی نظیر و بسیار کارامده.
+        این پروژه open source هست و کد اپ و پنل سایت و بک اند رو میتونین در گیت هاب آیدی dunijet به اسم team git پیدا کنین.
+        برای تهیه این دوره کاربری، دوره تیم گیت رو در اینترنت سرچ کنین یا به سایت دانیجت سر بزنین :)
+    """.trimIndent()
+
+    Column(modifier = modifier) {
+
+        Text(
+            text = appInfo,
+            textAlign = TextAlign.Justify,
+            style = MaterialTheme.typography.h4
+        )
+
+        Text(
+            modifier = Modifier
+                .padding(start = 18.dp, top = 10.dp)
+                .clickable { },
+            text = "صفحه گیت هاب پروژه",
+            color = cPrimary,
+            style = MaterialTheme.typography.h4
+        )
+
+        Text(
+            modifier = Modifier
+                .padding(start = 18.dp, top = 10.dp)
+                .clickable { },
+            text = "ورود به دوره تیم گیت",
+            color = cPrimary,
+            style = MaterialTheme.typography.h4
+        )
+
+        Text(
+            modifier = Modifier
+                .padding(start = 18.dp, top = 10.dp)
+                .clickable { },
+            text = "تیم گیت تو کافه بازار",
+            color = cPrimary,
+            style = MaterialTheme.typography.h4
+        )
 
     }
 
 
 }
 
-//@Composable
-//private fun DrawerMenuItem(
-//    iconDrawableId: Int,
-//    text: String) {
-//    Row(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .clickable {onItemClick()}
-//            .padding(16.dp),
-//        verticalAlignment = Alignment.CenterVertically,
-//    ){
-//        Icon(
-//            painter = painterResource(iconDrawableId),
-//            contentDescription = null,
-//        )
-//        Spacer(modifier = Modifier.width(16.dp))
-//        Text(text = text, )
-//    }
-//}
-//
-//@Composable
-//fun DrawerBody() {
-//    Column {
-//
-//        DrawerMenuItem(
-//            iconDrawableId = R.drawable.ic_code,
-//            text = "اطلاعات توسعه دهندگان"
-//        )
-//
-//        DrawerMenuItem(
-//            iconDrawableId = R.drawable.ic_info,
-//            text = "درباره برنامه",
-//        )
-//    }
-//}
-//
-//
-//@Composable
-//fun DrawerHeader(){
-//    Row(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(vertical = 64.dp)
-//        ,
-//        horizontalArrangement = Arrangement.Center,
-//    ) {
-//        Text(text = "Header", fontSize = 60.sp)
-//    }
-//}
+@Composable
+fun DevelopersIds() {
+
+    Column {
+        Developer(R.drawable.i1, "محمد احمدی", "برنامه نویس اپ اندروید", "@m.ahmadi")
+        Developer(R.drawable.i2, "زهرا قاسمی", "برنامه نویس پنل فرانت", "@zahraghasemi")
+        Developer(R.drawable.i3, "احمد مهدوی", "برنامه نویس بک اند", "@ahmad_mhd")
+        Developer(R.drawable.i4, "سامان کریم\u200Cپور", "مدیر پروژه", "@saman.karim.p")
+    }
+
+}
+
+@Composable
+private fun Developer(
+    iconDrawableId: Int,
+    title: String,
+    detail: String,
+    page: String
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+
+//    val rotation by remember { mutableStateOf(0f) }
+//    val scope = rememberCoroutineScope()
+//    val rotationAnimation = remember { Animatable(0f) }
+
+    ConstraintLayout(modifier = Modifier
+        .fillMaxWidth()
+        .clickable(
+            interactionSource = interactionSource,
+            indication = null
+        ) {
+
+        }) {
+
+        val (nameDeveloper, instaId, imgInsta) = createRefs()
+
+        Text(
+            modifier = Modifier
+                .constrainAs(nameDeveloper) {
+                    top.linkTo(imgInsta.top)
+                    start.linkTo(imgInsta.end)
+                }
+                .padding(start = 18.dp, top = 8.dp),
+            text = title,
+            color = cText1,
+            style = MaterialTheme.typography.h4
+        )
+
+        CompositionLocalProvider(LocalLayoutDirection provides androidx.compose.ui.unit.LayoutDirection.Ltr) {
+
+            Text(
+                modifier = Modifier
+                    .constrainAs(instaId) {
+                        top.linkTo(nameDeveloper.bottom)
+                        end.linkTo(imgInsta.start)
+                    }
+                    .padding(start = 18.dp, top = 2.dp),
+                text = page,
+                color = cText1,
+                style = MaterialTheme.typography.overline
+            )
+
+        }
+
+        Image(
+            modifier = Modifier
+                .size(52.dp)
+                .constrainAs(imgInsta) {
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                    start.linkTo(parent.start)
+                }
+                .padding(start = 16.dp),
+            painter = painterResource(id = iconDrawableId),
+            contentDescription = null
+        )
+
+    }
+
+}
 
 // - - - - - - - - - - - - - - - - - - - - -
+

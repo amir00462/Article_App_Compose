@@ -16,6 +16,8 @@ val cText2 = Color(0xFF666666)
 val cText3 = Color(0xFF888888)
 val cText4 = Color(0xFF444444)
 
+val cArrow = Color(0xFF9FA1A3)
+
 val cBorder = Color(0xFFEEEEEE)
 
 // dark ->
