@@ -3,7 +3,8 @@ package ir.dunijet.article_app_compose.ui.theme
 import androidx.compose.ui.graphics.Color
 
 // light ->
-val cBackground = Color(0xFFDDDDDD)
+//val cBackground = Color(0xFFECECEC)
+val cBackground = Color(0xFFFFFFFF)
 val cPrimary = Color(0xFF0855DF)
 val cError = Color(0xFFDF0808)
 
