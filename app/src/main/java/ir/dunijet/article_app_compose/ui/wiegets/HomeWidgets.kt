@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Constraints
@@ -24,10 +25,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import ir.dunijet.article_app_compose.ui.theme.cArrow
-import ir.dunijet.article_app_compose.ui.theme.cBackground
-import ir.dunijet.article_app_compose.ui.theme.cPrimary
-import ir.dunijet.article_app_compose.ui.theme.cText1
+import ir.dunijet.article_app_compose.ui.theme.*
 import kotlinx.coroutines.launch
 
 @Composable
@@ -213,7 +211,7 @@ private fun DrawerMenuItem(
 
         ) {
 
-            if(text == "اطلاعات توسعه دهندگان") {
+            if (text == "اطلاعات توسعه دهندگان") {
                 DevelopersIds()
             } else {
 
@@ -330,7 +328,7 @@ fun AppInfo(modifier: Modifier) {
 fun DevelopersIds() {
 
     Column {
-        Developer(R.drawable.i1, "محمد احمدی", "برنامه نویس اپ اندروید", "@m.ahmadi")
+        Developer(R.drawable.i1, "محمد احمدی", "برنامه نویس اپ اندروید", "@amir00462")
         Developer(R.drawable.i2, "زهرا قاسمی", "برنامه نویس پنل فرانت", "@zahraghasemi")
         Developer(R.drawable.i3, "احمد مهدوی", "برنامه نویس بک اند", "@ahmad_mhd")
         Developer(R.drawable.i4, "سامان کریم\u200Cپور", "مدیر پروژه", "@saman.karim.p")
@@ -346,6 +344,7 @@ private fun Developer(
     page: String
 ) {
     val interactionSource = remember { MutableInteractionSource() }
+    val uriHandler = LocalUriHandler.current
 
 //    val rotation by remember { mutableStateOf(0f) }
 //    val scope = rememberCoroutineScope()
@@ -353,14 +352,15 @@ private fun Developer(
 
     ConstraintLayout(modifier = Modifier
         .fillMaxWidth()
+        .padding(bottom = 18.dp)
         .clickable(
             interactionSource = interactionSource,
             indication = null
         ) {
-
+            uriHandler.openUri("https://www.instagram.com/" + page.substring(1))
         }) {
 
-        val (nameDeveloper, instaId, imgInsta) = createRefs()
+        val (nameDeveloper, imgInsta , details) = createRefs()
 
         Text(
             modifier = Modifier
@@ -368,7 +368,7 @@ private fun Developer(
                     top.linkTo(imgInsta.top)
                     start.linkTo(imgInsta.end)
                 }
-                .padding(start = 18.dp, top = 8.dp),
+                .padding(start = 18.dp),
             text = title,
             color = cText1,
             style = MaterialTheme.typography.h4
@@ -378,30 +378,39 @@ private fun Developer(
 
             Text(
                 modifier = Modifier
-                    .constrainAs(instaId) {
+                    .constrainAs(details) {
                         top.linkTo(nameDeveloper.bottom)
-                        end.linkTo(imgInsta.start)
+                        start.linkTo(imgInsta.end)
                     }
-                    .padding(start = 18.dp, top = 2.dp),
-                text = page,
-                color = cText1,
+                    .padding(end = 18.dp, top = 2.dp),
+                text = detail + " - " + page,
+                color = cText3,
                 style = MaterialTheme.typography.overline
             )
 
+
+
         }
 
-        Image(
-            modifier = Modifier
-                .size(52.dp)
-                .constrainAs(imgInsta) {
-                    top.linkTo(parent.top)
-                    bottom.linkTo(parent.bottom)
-                    start.linkTo(parent.start)
-                }
-                .padding(start = 16.dp),
-            painter = painterResource(id = iconDrawableId),
-            contentDescription = null
-        )
+        Box(modifier = Modifier
+            .constrainAs(imgInsta) {
+                top.linkTo(parent.top)
+                bottom.linkTo(parent.bottom)
+                start.linkTo(parent.start)
+            }
+            .padding(start = 16.dp) , contentAlignment = Alignment.Center)
+        {
+
+            Image(modifier = Modifier.size(52.dp) , painter = painterResource(id = R.drawable.ic_ring), contentDescription = null)
+
+            Image(
+                modifier = Modifier
+                    .size(48.dp),
+                painter = painterResource(id = iconDrawableId),
+                contentDescription = null
+            )
+
+        }
 
     }
 
