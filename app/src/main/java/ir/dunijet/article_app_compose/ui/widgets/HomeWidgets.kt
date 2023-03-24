@@ -20,6 +20,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.paging.compose.LazyPagingItems
+import ir.dunijet.article_app_compose.data.model.Article
 import ir.dunijet.article_app_compose.ui.theme.*
 import ir.dunijet.article_app_compose.util.NetworkChecker
 import kotlinx.coroutines.launch
@@ -398,7 +400,7 @@ private fun Developer(
 // - - - - - - - - - - - - - - - - - - - - -
 
 @Composable
-fun HomeContent() {
+fun HomeContent(lazyPagingData :LazyPagingItems<Article>) {
     val context = LocalContext.current
     var internetConnected by remember { mutableStateOf(true) }
     val jobState = remember { mutableStateOf(2) } // 1:loading , 2:ok , 3:noArticle
@@ -443,7 +445,11 @@ fun HomeContent() {
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
-                    })
+                    } ,
+
+                    lazyPagingData = lazyPagingData
+
+                    )
             }
 
             3 -> {

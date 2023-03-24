@@ -8,13 +8,16 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.paging.compose.collectAsLazyPagingItems
-import dev.burnoo.cokoin.get
+import androidx.paging.PagingData
 import dev.burnoo.cokoin.navigation.getNavViewModel
+import ir.dunijet.article_app_compose.data.model.Article
 import ir.dunijet.article_app_compose.ui.theme.cBackground
 import ir.dunijet.article_app_compose.ui.widgets.HomeContent
 import ir.dunijet.article_app_compose.ui.widgets.HomeDrawer
 import ir.dunijet.article_app_compose.ui.widgets.HomeToolbar
+import ir.dunijet.article_app_compose.util.listArticle
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf
 
@@ -27,7 +30,19 @@ fun HomeScreenUi() {
     val scope = rememberCoroutineScope()
 
     val articles = viewModel.getArticles()
-    val lazyPagingItems = articles.collectAsLazyPagingItems()
+    val lazyPagingItems = flowOf(PagingData.from(listArticle)).collectAsLazyPagingItems()
+
+//    LaunchedEffect(null) {
+//        scope.launch {
+//            articles.collectLatest {
+//
+//                it.map {
+//                    Log.v("testArticle", it.toString())
+//                }
+//
+//            }
+//        }
+//    }
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -58,7 +73,7 @@ fun HomeScreenUi() {
         drawerBackgroundColor = cBackground
     ) {
 
-        HomeContent()
+        HomeContent(lazyPagingItems)
 
     }
 
