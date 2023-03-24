@@ -1,4 +1,4 @@
-package ir.dunijet.article_app_compose.data
+package ir.dunijet.article_app_compose.data.model
 
 data class Article(
     val id: Int,

@@ -1,4 +1,4 @@
-package ir.dunijet.article_app_compose.ui.features
+package ir.dunijet.article_app_compose.ui.features.homeScreen
 
 import android.app.Activity
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,18 +8,26 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.collectAsLazyPagingItems
+import dev.burnoo.cokoin.get
+import dev.burnoo.cokoin.navigation.getNavViewModel
 import ir.dunijet.article_app_compose.ui.theme.cBackground
-import ir.dunijet.article_app_compose.ui.wiegets.HomeContent
-import ir.dunijet.article_app_compose.ui.wiegets.HomeDrawer
-import ir.dunijet.article_app_compose.ui.wiegets.HomeToolbar
+import ir.dunijet.article_app_compose.ui.widgets.HomeContent
+import ir.dunijet.article_app_compose.ui.widgets.HomeDrawer
+import ir.dunijet.article_app_compose.ui.widgets.HomeToolbar
 import kotlinx.coroutines.launch
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun HomeScreenUi() {
 
+    val viewModel = getNavViewModel<HomeViewModel>()
     val activity = (LocalContext.current as? Activity)
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
+
+    val articles = viewModel.getArticles()
+    val lazyPagingItems = articles.collectAsLazyPagingItems()
 
     Scaffold(
         scaffoldState = scaffoldState,

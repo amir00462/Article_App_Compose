@@ -1,4 +1,4 @@
-package ir.dunijet.article_app_compose.ui.wiegets
+package ir.dunijet.article_app_compose.ui.widgets
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier

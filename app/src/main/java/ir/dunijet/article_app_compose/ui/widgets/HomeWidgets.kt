@@ -1,4 +1,4 @@
-package ir.dunijet.article_app_compose.ui.wiegets
+package ir.dunijet.article_app_compose.ui.widgets
 
 import android.widget.Toast
 import ir.dunijet.article_app_compose.R
@@ -18,13 +18,8 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import ir.dunijet.article_app_compose.ui.theme.*
 import ir.dunijet.article_app_compose.util.NetworkChecker
 import kotlinx.coroutines.launch
@@ -443,7 +438,7 @@ fun HomeContent() {
             }
 
             2 -> {
-                ArticleList(modifier = Modifier
+                ArticlePagingList(modifier = Modifier
                     .constrainAs(articleList) {
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)
