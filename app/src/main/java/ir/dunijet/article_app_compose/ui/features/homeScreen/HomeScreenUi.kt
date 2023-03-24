@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
+import androidx.paging.compose.collectAsLazyPagingItems
 import dev.burnoo.cokoin.navigation.getNavViewModel
 import ir.dunijet.article_app_compose.data.model.Article
 import ir.dunijet.article_app_compose.ui.theme.cBackground
