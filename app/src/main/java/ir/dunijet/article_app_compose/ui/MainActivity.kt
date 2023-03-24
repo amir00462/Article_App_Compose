@@ -23,6 +23,7 @@ import ir.dunijet.article_app_compose.ui.features.homeScreen.HomeScreenUi
 import ir.dunijet.article_app_compose.ui.features.SearchScreenUi
 import ir.dunijet.article_app_compose.ui.theme.Article_App_ComposeTheme
 import ir.dunijet.article_app_compose.ui.theme.cBackground
+import ir.dunijet.article_app_compose.util.KEY_BLOG_ARG
 import ir.dunijet.article_app_compose.util.MyScreens
 import org.koin.android.ext.koin.androidContext
 

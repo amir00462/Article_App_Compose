@@ -26,8 +26,7 @@ fun HomeScreenUi() {
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
 
-    val articles = viewModel.getArticles()
-    val lazyPagingItems = articles.collectAsLazyPagingItems()
+    val lazyPagingItems = viewModel.articles.collectAsLazyPagingItems()
 
     Scaffold(
         scaffoldState = scaffoldState,

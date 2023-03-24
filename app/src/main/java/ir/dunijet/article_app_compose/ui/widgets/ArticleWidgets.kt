@@ -1,5 +1,6 @@
 package ir.dunijet.article_app_compose.ui.widgets
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -16,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -25,22 +27,27 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.items
+import dev.burnoo.cokoin.navigation.getNavController
 import ir.dunijet.article_app_compose.R
 import ir.dunijet.article_app_compose.data.model.Article
 import ir.dunijet.article_app_compose.ui.theme.cText1
 import ir.dunijet.article_app_compose.ui.theme.cText3
 import ir.dunijet.article_app_compose.ui.theme.radius4
+import ir.dunijet.article_app_compose.util.MyScreens
 import ir.dunijet.article_app_compose.util.mockArticle
 
 @Composable
-fun ArticlePagingList(modifier: Modifier, lazyPagingData: LazyPagingItems<Article>) {
+fun ArticlePagingList(modifier: Modifier, lazyPagingData: LazyPagingItems<Article> , ItemClicked :(Article) -> Unit) {
+    val navigation = getNavController()
 
     LazyColumn(modifier = modifier) {
 
         items(items = lazyPagingData) {
-            Article(article = it!!) {
 
+            Article(article = it!!) { article ->
+                ItemClicked.invoke(article)
             }
+
         }
 
         if (lazyPagingData.loadState.append == LoadState.Loading) {
@@ -60,7 +67,9 @@ fun ArticlePagingList(modifier: Modifier, lazyPagingData: LazyPagingItems<Articl
 
 @Composable
 fun Article(article: Article, onClicked: (Article) -> Unit) {
+
     val interactionSource = remember { MutableInteractionSource() }
+    val configuration = LocalConfiguration.current
 
     ConstraintLayout(modifier = Modifier
         .fillMaxWidth()
@@ -88,7 +97,10 @@ fun Article(article: Article, onClicked: (Article) -> Unit) {
 
         Text(
             modifier = Modifier
-                .width(260.dp)
+                // .width(260.dp)
+                .fillMaxWidth(
+                    if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) 0.7f else 0.85f
+                )
                 .constrainAs(title) {
                     top.linkTo(category.bottom)
                     start.linkTo(pic.end)

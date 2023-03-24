@@ -5,10 +5,8 @@ import ir.dunijet.article_app_compose.data.model.Article
 val STARTING_PAGE_INDEX = 1
 val NETWORK_PAGE_SIZE = 10
 val BASE_URL = "http://dunijet.ir"
-
-
-
-
+val KEY_BLOG_ARG = "keyBlogScreen"
+val KEY_CACHE = "keyBlogScreen"
 
 val listArticle = listOf(
 

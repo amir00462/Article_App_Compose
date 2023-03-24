@@ -1,6 +1,7 @@
 package ir.dunijet.article_app_compose.ui.widgets
 
 import android.content.res.Configuration
+import android.os.Bundle
 import android.widget.Toast
 import ir.dunijet.article_app_compose.R
 import androidx.activity.compose.BackHandler
@@ -22,12 +23,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.core.os.bundleOf
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
+import dev.burnoo.cokoin.navigation.getNavController
 import ir.dunijet.article_app_compose.data.model.Article
 import ir.dunijet.article_app_compose.ui.theme.*
-import ir.dunijet.article_app_compose.util.FadeInOutWidget
-import ir.dunijet.article_app_compose.util.NetworkChecker
+import ir.dunijet.article_app_compose.util.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -406,6 +408,7 @@ private fun Developer(
 
 @Composable
 fun HomeContent(lazyPagingData: LazyPagingItems<Article>) {
+    val navigation = getNavController()
     val snackbarVisible = remember { mutableStateOf(false) }
     val configuration = LocalConfiguration.current
     val context = LocalContext.current
@@ -424,7 +427,8 @@ fun HomeContent(lazyPagingData: LazyPagingItems<Article>) {
             configuration.orientation
                     == Configuration.ORIENTATION_PORTRAIT
 
-                    && snackbarVisible.value) {
+                    && snackbarVisible.value
+        ) {
 
             Snackbar(
                 modifier = Modifier.padding(16.dp),
@@ -484,7 +488,12 @@ fun HomeContent(lazyPagingData: LazyPagingItems<Article>) {
                         },
 
                     lazyPagingData = lazyPagingData
-                )
+                ) {
+                    Cache.put(KEY_CACHE , it)
+                    navigation.navigate(MyScreens.BlogScreen.route + "/" + it.id)
+                }
+
+
             }
 
             3 -> {

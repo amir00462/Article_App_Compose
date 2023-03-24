@@ -18,4 +18,6 @@ class ArticleRepositoryImpl(private val apiService: ApiService) : ArticleReposit
         ).flow
     }
 
+    override fun getData() = ArticleDataSource(apiService)
+
 }
