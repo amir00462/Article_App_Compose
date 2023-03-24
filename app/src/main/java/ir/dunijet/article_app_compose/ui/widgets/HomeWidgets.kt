@@ -400,7 +400,7 @@ private fun Developer(
 // - - - - - - - - - - - - - - - - - - - - -
 
 @Composable
-fun HomeContent(lazyPagingData :LazyPagingItems<Article>) {
+fun HomeContent(lazyPagingData :LazyPagingItems<Article>?) {
     val context = LocalContext.current
     var internetConnected by remember { mutableStateOf(true) }
     val jobState = remember { mutableStateOf(2) } // 1:loading , 2:ok , 3:noArticle

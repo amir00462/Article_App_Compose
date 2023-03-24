@@ -33,40 +33,45 @@ import ir.dunijet.article_app_compose.ui.theme.radius4
 import ir.dunijet.article_app_compose.util.mockArticle
 
 @Composable
-fun ArticlePagingList(modifier: Modifier, lazyPagingData: LazyPagingItems<Article>) {
+fun ArticlePagingList(modifier: Modifier, lazyPagingData: LazyPagingItems<Article>?) {
 
     LazyColumn(modifier = modifier) {
 
-        if (lazyPagingData.loadState.refresh == LoadState.Loading) {
+        // -----------------------------------------------------------------------------------------    // new code
 
-            item {
-                Text(
-                    text = "paging initial load",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentWidth(Alignment.CenterHorizontally)
-                )
-            }
-        }
+//        if (lazyPagingData.loadState.refresh == LoadState.Loading) {
+//
+//            item {
+//                Text(
+//                    text = "paging initial load",
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .wrapContentWidth(Alignment.CenterHorizontally)
+//                )
+//            }
+//        }
 
-        items(lazyPagingItems = lazyPagingData) {
-            Article(article = it!!) {
-            }
+//        items(lazyPagingItems = lazyPagingData) {
+//            Article(article = it!!) {
+//            }
+//
+//        }
 
-        }
+//        if (lazyPagingData.loadState.append == LoadState.Loading) {
+//            item {
+//                CircularProgressIndicator(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .wrapContentWidth(Alignment.CenterHorizontally)
+//                )
+//            }
+//        }
+//
+//    }
 
-        if (lazyPagingData.loadState.append == LoadState.Loading) {
-            item {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentWidth(Alignment.CenterHorizontally)
-                )
-            }
-        }
+        // -----------------------------------------------------------------------------------------
 
-    }
-
+        // last code
 //    Column(modifier = modifier.verticalScroll(rememberScrollState())) {
 //
 //        for (i in 0 until 30) {
@@ -80,67 +85,69 @@ fun ArticlePagingList(modifier: Modifier, lazyPagingData: LazyPagingItems<Articl
 //
 //    }
 
-}
+    }
 
-@Composable
-fun Article(article: Article, onClicked: (Article) -> Unit) {
-    val interactionSource = remember { MutableInteractionSource() }
+    @Composable
+    fun Article(article: Article, onClicked: (Article) -> Unit) {
+        val interactionSource = remember { MutableInteractionSource() }
 
-    ConstraintLayout(modifier = Modifier
-        .fillMaxWidth()
-        .padding(top = 8.dp, bottom = 8.dp)
-        .clickable(
-            interactionSource = interactionSource,
-            indication = null
-        ) {
-            onClicked.invoke(article)
-        }) {
+        ConstraintLayout(modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp, bottom = 8.dp)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null
+            ) {
+                onClicked.invoke(article)
+            }) {
 
-        val (category, pic, title) = createRefs()
+            val (category, pic, title) = createRefs()
 
-        Text(
-            modifier = Modifier
-                .constrainAs(category) {
-                    top.linkTo(pic.top)
-                    start.linkTo(pic.end)
-                }
-                .padding(start = 18.dp, top = 8.dp),
-            text = article.category,
-            color = cText3,
-            style = MaterialTheme.typography.overline
-        )
+            Text(
+                modifier = Modifier
+                    .constrainAs(category) {
+                        top.linkTo(pic.top)
+                        start.linkTo(pic.end)
+                    }
+                    .padding(start = 18.dp, top = 8.dp),
+                text = article.category,
+                color = cText3,
+                style = MaterialTheme.typography.overline
+            )
 
-        Text(
-            modifier = Modifier
-                .width(260.dp)
-                .constrainAs(title) {
-                    top.linkTo(category.bottom)
-                    start.linkTo(pic.end)
-                }
-                .padding(start = 18.dp, top = 2.dp, end = 16.dp),
-            text = article.title,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-            color = cText1,
-            style = MaterialTheme.typography.h5,
-            textAlign = TextAlign.Start
-        )
+            Text(
+                modifier = Modifier
+                    .width(260.dp)
+                    .constrainAs(title) {
+                        top.linkTo(category.bottom)
+                        start.linkTo(pic.end)
+                    }
+                    .padding(start = 18.dp, top = 2.dp, end = 16.dp),
+                text = article.title,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                color = cText1,
+                style = MaterialTheme.typography.h5,
+                textAlign = TextAlign.Start
+            )
 
-        // change it with coil image :)
-        Image(
-            modifier = Modifier
-                .size(120.dp, 90.dp)
-                .clip(radius4)
-                .constrainAs(pic) {
-                    top.linkTo(parent.top)
-                    bottom.linkTo(parent.bottom)
-                    start.linkTo(parent.start)
-                }
-                .padding(start = 16.dp),
-            painter = painterResource(id = R.drawable.pic1),
-            contentDescription = null
-        )
+            // change it with coil image :)
+            Image(
+                modifier = Modifier
+                    .size(120.dp, 90.dp)
+                    .clip(radius4)
+                    .constrainAs(pic) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start)
+                    }
+                    .padding(start = 16.dp),
+                painter = painterResource(id = R.drawable.pic1),
+                contentDescription = null
+            )
 
+
+        }
 
     }
 

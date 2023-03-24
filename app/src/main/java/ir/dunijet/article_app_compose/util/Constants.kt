@@ -3,7 +3,7 @@ package ir.dunijet.article_app_compose.util
 import ir.dunijet.article_app_compose.data.model.Article
 
 val STARTING_PAGE_INDEX = 1
-val NETWORK_PAGE_SIZE = 25
+val NETWORK_PAGE_SIZE = 10
 val BASE_URL = "http://dunijet.ir"
 
 

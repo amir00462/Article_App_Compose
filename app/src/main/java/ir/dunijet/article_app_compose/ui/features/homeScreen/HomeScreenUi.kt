@@ -1,15 +1,18 @@
 package ir.dunijet.article_app_compose.ui.features.homeScreen
 
 import android.app.Activity
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.map
 import dev.burnoo.cokoin.navigation.getNavViewModel
 import ir.dunijet.article_app_compose.data.model.Article
 import ir.dunijet.article_app_compose.ui.theme.cBackground
@@ -17,6 +20,7 @@ import ir.dunijet.article_app_compose.ui.widgets.HomeContent
 import ir.dunijet.article_app_compose.ui.widgets.HomeDrawer
 import ir.dunijet.article_app_compose.ui.widgets.HomeToolbar
 import ir.dunijet.article_app_compose.util.listArticle
+import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
@@ -33,17 +37,18 @@ fun HomeScreenUi() {
     val articles = viewModel.getArticles()
     val lazyPagingItems = flowOf(PagingData.from(listArticle)).collectAsLazyPagingItems()
 
-//    LaunchedEffect(null) {
-//        scope.launch {
-//            articles.collectLatest {
-//
-//                it.map {
-//                    Log.v("testArticle", it.toString())
-//                }
-//
-//            }
-//        }
-//    }
+    LaunchedEffect(null) {
+
+        Log.v("testArticle", "hello")
+
+        scope.launch {
+            articles.collectIndexed { index, value ->
+
+                Log.v("testArticle", index.toString() + "  -  " + value.toString())
+
+            }
+        }
+    }
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -74,7 +79,7 @@ fun HomeScreenUi() {
         drawerBackgroundColor = cBackground
     ) {
 
-        HomeContent(lazyPagingItems)
+        HomeContent(null)
 
     }
 
