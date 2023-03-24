@@ -37,27 +37,10 @@ fun ArticlePagingList(modifier: Modifier, lazyPagingData: LazyPagingItems<Articl
 
     LazyColumn(modifier = modifier) {
 
-        // -----------------------------------------------------------------------------------------    // new code
-
-        if (lazyPagingData.loadState.refresh == LoadState.Loading) {
-
-            item {
-                Text(
-                    text = "paging initial load",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentWidth(Alignment.CenterHorizontally)
-                )
-            }
-        }
-
         items(items = lazyPagingData) {
-
             Article(article = it!!) {
 
-
             }
-
         }
 
         if (lazyPagingData.loadState.append == LoadState.Loading) {
@@ -66,27 +49,12 @@ fun ArticlePagingList(modifier: Modifier, lazyPagingData: LazyPagingItems<Articl
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentWidth(Alignment.CenterHorizontally)
+                        .padding(12.dp)
                 )
             }
         }
 
     }
-
-    // -----------------------------------------------------------------------------------------
-
-    // last code
-//    Column(modifier = modifier.verticalScroll(rememberScrollState())) {
-//
-//        for (i in 0 until 30) {
-//
-//            Article(mockArticle.copy(id = i)) {
-//
-//            }
-//
-//        }
-//
-//
-//    }
 
 }
 
@@ -149,7 +117,5 @@ fun Article(article: Article, onClicked: (Article) -> Unit) {
             contentDescription = null
         )
 
-
     }
-
 }

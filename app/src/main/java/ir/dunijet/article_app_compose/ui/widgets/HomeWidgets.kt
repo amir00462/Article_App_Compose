@@ -1,5 +1,6 @@
 package ir.dunijet.article_app_compose.ui.widgets
 
+import android.content.res.Configuration
 import android.widget.Toast
 import ir.dunijet.article_app_compose.R
 import androidx.activity.compose.BackHandler
@@ -13,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalUriHandler
@@ -20,10 +22,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import ir.dunijet.article_app_compose.data.model.Article
 import ir.dunijet.article_app_compose.ui.theme.*
+import ir.dunijet.article_app_compose.util.FadeInOutWidget
 import ir.dunijet.article_app_compose.util.NetworkChecker
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -400,35 +405,52 @@ private fun Developer(
 // - - - - - - - - - - - - - - - - - - - - -
 
 @Composable
-fun HomeContent(lazyPagingData :LazyPagingItems<Article>) {
+fun HomeContent(lazyPagingData: LazyPagingItems<Article>) {
+    val snackbarVisible = remember { mutableStateOf(false) }
+    val configuration = LocalConfiguration.current
     val context = LocalContext.current
-    var internetConnected by remember { mutableStateOf(true) }
-    val jobState = remember { mutableStateOf(2) } // 1:loading , 2:ok , 3:noArticle
-    val scaffoldState = rememberScaffoldState()
-    val scope = rememberCoroutineScope()
+    val internetConnected by remember { mutableStateOf(NetworkChecker(context).isInternetConnected) }
+    val jobState = remember { mutableStateOf(1) } // 1:loading , 2:ok , 3:noArticle
 
-    // Check internet
-    val isConnected = NetworkChecker(context).isInternetConnected
-    Toast.makeText(context, isConnected.toString(), Toast.LENGTH_SHORT).show()
-    if (!isConnected) {
-        internetConnected = false
+    // network
+    if (internetConnected) {
+        jobState.value = 1
+    } else {
+
         jobState.value = 3
-    }
-//    else {
-//        internetConnected = true
-//        jobState.value = 1
-//    }
-//
+        LaunchedEffect(true) { snackbarVisible.value = true }
 
+        FadeInOutWidget(configuration.orientation == Configuration.ORIENTATION_PORTRAIT && snackbarVisible.value) {
+
+            Snackbar(
+                modifier = Modifier.padding(16.dp), backgroundColor = cError
+            ) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "لطفا از اتصال دستگاه خود به اینترنت مطمئن شوید",
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            LaunchedEffect(true) {
+                delay(2500)
+                snackbarVisible.value = false
+            }
+
+        }
+
+    }
+
+    // show data
     ConstraintLayout(
         modifier = Modifier.fillMaxSize()
     ) {
 
         val (noInternet, progressBar, articleList) = createRefs()
-
         when (jobState.value) {
 
             1 -> {
+
                 CircularProgressIndicator(modifier = Modifier
                     .size(40.dp)
                     .constrainAs(progressBar) {
@@ -437,15 +459,24 @@ fun HomeContent(lazyPagingData :LazyPagingItems<Article>) {
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     })
+
+                // stop loading after a while
+                if (lazyPagingData.loadState.refresh == LoadState.Loading) {
+                    jobState.value = 1
+                } else {
+                    jobState.value = 2
+                }
+
             }
 
             2 -> {
-                ArticlePagingList(modifier = Modifier
-                    .constrainAs(articleList) {
-                        top.linkTo(parent.top)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    } ,
+                ArticlePagingList(
+                    modifier = Modifier
+                        .constrainAs(articleList) {
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        },
 
                     lazyPagingData = lazyPagingData
                 )
@@ -460,7 +491,8 @@ fun HomeContent(lazyPagingData :LazyPagingItems<Article>) {
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     }
-                    .padding(bottom = 80.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                    .padding(bottom = 80.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally) {
                     Image(
                         modifier = Modifier.size(120.dp),
                         painter = painterResource(id = R.drawable.ic_no_article),
@@ -475,19 +507,6 @@ fun HomeContent(lazyPagingData :LazyPagingItems<Article>) {
 
             }
 
-        }
-
-    }
-
-    // TODO: work on Snack Bar
-    if (!internetConnected) {
-        Snackbar(
-            modifier = Modifier.padding(16.dp)) {
-            Text(
-                modifier = Modifier.fillMaxWidth() ,
-                text = "لطفا از اتصال دستگاه خود به اینترنت مطمئن شوید",
-                textAlign = TextAlign.Center
-            )
         }
 
     }

@@ -1,10 +1,12 @@
 package ir.dunijet.article_app_compose.ui.features.homeScreen
 
 import android.app.Activity
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -56,7 +58,9 @@ fun HomeScreenUi() {
         drawerBackgroundColor = cBackground
     ) {
 
-        HomeContent(lazyPagingItems)
+        Box(modifier = Modifier.fillMaxSize() , contentAlignment = Alignment.BottomCenter) {
+            HomeContent(lazyPagingItems)
+        }
 
     }
 

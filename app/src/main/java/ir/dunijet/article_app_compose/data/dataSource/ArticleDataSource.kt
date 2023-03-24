@@ -7,6 +7,7 @@ import ir.dunijet.article_app_compose.data.model.Article
 import ir.dunijet.article_app_compose.data.net.ApiService
 import ir.dunijet.article_app_compose.util.STARTING_PAGE_INDEX
 import ir.dunijet.article_app_compose.util.mockArticle
+import kotlinx.coroutines.delay
 import retrofit2.HttpException
 import java.io.IOException
 import java.lang.Integer.max
@@ -20,13 +21,15 @@ class ArticleDataSource(private val apiService: ApiService) : PagingSource<Int, 
     // fake
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Article> {
 
+        delay(1000)
+
         val start = params.key ?: STARTING_PAGE_INDEX
         val range = start.until(start + params.loadSize)
 
         return LoadResult.Page(
 
             data = range.map { it ->
-                mockArticle.copy(id = it)
+                mockArticle.copy(id = it , category = "هوش مصنوعی" + " " + it)
             },
 
             prevKey = when (start) {
