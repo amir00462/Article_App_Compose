@@ -64,6 +64,8 @@ dependencies {
     //implementation 'androidx.paging:paging-runtime:3.0.0-alpha12'
     // implementation "androidx.paging:paging-compose:1.0.0-alpha08"
     //implementation "androidx.paging:paging-compose:1.0.0-alpha18"
+    implementation 'androidx.paging:paging-runtime:3.2.0-alpha01'
+    implementation 'androidx.paging:paging-compose:1.0.0-alpha15'
 
 
     // retrofit
@@ -100,6 +102,6 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0"
 
     // external libraries
-     implementation fileTree(dir: 'libs', include: ['*.aar'])
+    // implementation fileTree(dir: 'libs', include: ['*.aar'])
 
 }
