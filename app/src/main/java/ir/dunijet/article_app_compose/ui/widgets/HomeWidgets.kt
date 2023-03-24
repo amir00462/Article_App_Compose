@@ -420,10 +420,15 @@ fun HomeContent(lazyPagingData: LazyPagingItems<Article>) {
         jobState.value = 3
         LaunchedEffect(true) { snackbarVisible.value = true }
 
-        FadeInOutWidget(configuration.orientation == Configuration.ORIENTATION_PORTRAIT && snackbarVisible.value) {
+        FadeInOutWidget(
+            configuration.orientation
+                    == Configuration.ORIENTATION_PORTRAIT
+
+                    && snackbarVisible.value) {
 
             Snackbar(
-                modifier = Modifier.padding(16.dp), backgroundColor = cError
+                modifier = Modifier.padding(16.dp),
+                backgroundColor = cError
             ) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
